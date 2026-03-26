@@ -1,8 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
 function Signup() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <>
       <Navbar />
@@ -19,23 +23,26 @@ function Signup() {
 
             <input
               type="text"
-              placeholder="Full Name"
-              className="w-full border p-2 rounded"
+              placeholder="Full Name" value={name}
+  onChange={(e) => setName(e.target.value)}
+              className="w-full border p-2 rounded text-black bg-white"
             />
 
             <input
-              type="email"
+              type="email" value={email}
+  onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded text-black bg-white"
             />
 
             <input
-              type="password"
+              type="password" value={password}
+  onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded text-black bg-white"
             />
 
-            <button className="w-full bg-blue-600 text-white py-2 rounded">
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
               Sign Up
             </button>
 
