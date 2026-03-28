@@ -5,13 +5,14 @@ const ReportIssue = ({ addIssue }) => {
   const [hospital, setHospital] = useState("");
   const [type, setType] = useState("Sanitation");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    addIssue({ hospital, type, description });
-
+    const newIssue={id:Date.now(), hospital, type, description,image,status:"open" };
+    addIssue(newIssue);
     navigate("/");
   };
 

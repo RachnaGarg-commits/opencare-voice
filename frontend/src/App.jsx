@@ -1,13 +1,15 @@
+import { useState } from "react";
 import { Mic, BarChart3, Users } from "lucide-react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import ReportIssue from "./pages/ReportIssue";
 import Login from "./pages/Login";
 import Signup from "./pages/signup";
 import Myprofile from "./pages/myprofile";
+import VolunteerPage from "./pages/VolunteerPage";
+import ReportIssue from "./pages/ReportIssue";
 
-// Reusable wrapper for page content
 function PageWrapper({ children, title }) {
   return (
     <div className="flex flex-col items-center">
@@ -16,50 +18,66 @@ function PageWrapper({ children, title }) {
         A community-driven platform to report and resolve issues in government hospitals.
       </p>
 
-      {/* Badge */}
       <div className="mb-8 bg-green-500/20 text-green-300 px-4 py-1 rounded-full text-sm">
         ✅ 100% Free • Open Source • Community Driven
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
         {children}
       </div>
     </div>
   );
 }
+
 function App() {
+  // ✅ SAFE: state inside component
+  const [issues, setIssues] = useState([]);
+
+  const addIssue = (issue) => {
+    setIssues([...issues, issue]);
+  };
+
   return (
     <BrowserRouter>
-        <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-900 via-gray-900 to-blue-800 text-white">
-
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-900 via-gray-900 to-blue-800 text-white">
 
         {/* Navbar */}
         <nav className="bg-gray-800 shadow-md px-6 py-4 flex justify-between items-center border-b border-gray-700">
           <h1 className="text-2xl font-bold text-blue-400">
-          🎤 OpenCare Voice
+            🎤 OpenCare Voice
           </h1>
 
-           <div className="flex gap-6 text-sm font-medium">
-            <Link to="/" className="hover:text-blue-300 transition duration-300">Home</Link>
-            <Link to="/reportissue" className="hover:text-blue-300 transition duration-300">Report Issue</Link>
-            <Link to="/dashboard" className="hover:text-blue-300  duration-300">Dashboard</Link>
-            <Link to="/login"> <button className="border px-3 py-1 rounded-lg hover:bg-gray-700">Login
+          <div className="flex gap-6 text-sm font-medium">
+            <Link to="/" className="hover:text-blue-300">Home</Link>
+            <Link to="/reportissue" className="hover:text-blue-300">Report Issue</Link>
+            <Link to="/dashboard" className="hover:text-blue-300">Dashboard</Link>
+            <Link to="/volunteer" className="hover:text-blue-300">Volunteer</Link>
+
+            <Link to="/login">
+              <button className="border px-3 py-1 rounded-lg hover:bg-gray-700">
+                Login
               </button>
             </Link>
+
             <Link to="/signup">
-            <button className="bg-green-500 px-3 py-1 rounded-lg hover:bg-green-600">
-            Signup
-              </button></Link>
-              <Link to="/Myprofile">MyProfile</Link>
+              <button className="bg-green-500 px-3 py-1 rounded-lg hover:bg-green-600">
+                Signup
+              </button>
+            </Link>
+
+            <Link to="/Myprofile">MyProfile</Link>
           </div>
         </nav>
 
-
-       {/* Main Content */}
+        {/* Main Content */}
         <div className="flex-grow p-8">
           <Routes>
-            <Route path="/" element={
-              <PageWrapper title="Welcome to OpenCare Voice">
-                  {/* CARD 1 */}
+
+            {/* HOME (UNCHANGED UI) */}
+            <Route
+              path="/"
+              element={
+                <PageWrapper title="Welcome to OpenCare Voice">
                   <Card
                     icon={<Mic />}
                     title="Quick Report"
@@ -67,7 +85,6 @@ function App() {
                     btn="Report Issue"
                   />
 
-                  {/* CARD 2 */}
                   <Card
                     icon={<BarChart3 />}
                     title="Dashboard Overview"
@@ -75,30 +92,47 @@ function App() {
                     btn="View Dashboard"
                   />
 
-                  {/* CARD 3 */}
                   <Card
                     icon={<Users />}
                     title="Community Help"
                     desc="Collaborate with volunteers to solve problems"
                     btn="Join Community"
                   />
-
                 </PageWrapper>
               }
             />
-               
-            <Route path="/reportissue" element={<ReportIssue />} />
+
+            {/* EXISTING PAGES (UNCHANGED) */}
+            <Route
+              path="/reportissue"
+              element={<ReportIssue addIssue={addIssue} />}  // ✅ only small change
+            />
+
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/Myprofile" element={<Myprofile />} />
+
+            {/* NEW VOLUNTEER FEATURE (SAFE ADD) */}
+            <Route
+              path="/volunteer"
+              element={<VolunteerPage issues={issues} />}
+            />
+
+            <Route
+              path="/issue/:id"
+              element={<ReportIssue issues={issues} />}
+            />
+
           </Routes>
         </div>
 
         {/* Footer */}
-         <footer className="text-center py-6 text-gray-400 border-t border-gray-700 text-sm">
+        <footer className="text-center py-6 text-gray-400 border-t border-gray-700 text-sm">
           <p>© 2026 OpenCare Voice. All rights reserved.</p>
-          <p className="mt-2">Community-driven initiative for transparent healthcare</p>
+          <p className="mt-2">
+            Community-driven initiative for transparent healthcare
+          </p>
 
           <div className="flex justify-center gap-6 mt-3 text-xs">
             <span>🔐 Secure</span>
@@ -112,15 +146,12 @@ function App() {
     </BrowserRouter>
   );
 }
-/* 🔥 Improved Card Component */
+
 function Card({ icon, title, desc, btn }) {
   return (
     <div className="bg-white/10 backdrop-blur p-6 rounded-2xl shadow-lg hover:scale-105 transition duration-300">
-
       <div className="text-blue-300 mb-3">{icon}</div>
-
       <h3 className="text-xl font-semibold">{title}</h3>
-
       <p className="text-gray-300 mt-2">{desc}</p>
 
       <button className="mt-4 w-full bg-white text-blue-900 py-2 rounded-lg font-medium hover:bg-gray-200">
@@ -129,7 +160,5 @@ function Card({ icon, title, desc, btn }) {
     </div>
   );
 }
-     
-
 
 export default App;
